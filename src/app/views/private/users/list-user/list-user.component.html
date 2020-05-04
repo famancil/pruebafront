@@ -1,1 +1,200 @@
-<p>list-user works!</p>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">HOME</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarColor02">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Users</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Books</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Pricing</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">About</a>
+        </li>
+      </ul>
+      <form class="form-inline my-2 my-lg-0">
+        <input class="form-control mr-sm-2" type="text" placeholder="Search">
+        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+      </form>
+    </div>
+  </nav>
+
+  <div class="container col-sm-8">
+    
+    <h1>Listado de Alumnos</h1>
+    <div class="d-flex justify-content-center">
+
+      <button type="button" class="btn btn-success" (click)="open(crear,0)">
+        <fa-icon [icon]="faPlus"></fa-icon>
+         Agregar Usuario
+      </button>
+
+    </div>
+    
+    <table id="table_users" class="row-border hover">
+    <thead>
+      <tr>
+        <th class="w-5">#</th>
+        <th class="w-50">Nombre de usuario</th>
+        <th class="w-40">Correo</th>
+        <th class="w-40">Password</th>
+        <th class="w-5">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users;">
+        <th scope="row">{{user.id}}</th>
+        <td>{{user.username}}</td>
+        <td>{{user.email}}</td>
+        <td>{{user.password}}</td>
+        <td> 
+          <div class="d-flex justify-content-center btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+            <div class="btn-group mr-2" role="group" aria-label="First group">
+              <!--<button type="button" class="btn btn-info" (click)="open(editar,user.id)">
+                <fa-icon [icon]="faEdit"></fa-icon>
+                 Edit
+              </button>-->
+            </div>
+            <div class="btn-group mr-2" role="group" aria-label="Second group">
+              <!--<button type="button" class="btn btn-danger" (click)="open(borrar,user.id)">
+                <fa-icon [icon]="faTimes"></fa-icon>
+                Delete
+              </button>-->
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<ng-template #crear let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">CREAR USUARIO</h4>
+      <button type="button" class="close" aria-label="Close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+  
+      <p>
+        <ngb-alert type="danger" *ngIf="emailError" (close)="emailError = false">
+          <strong>Error!</strong> Correo ingresado existe y/o tiene un formato invalido, favor revisar.
+        </ngb-alert>
+      </p>
+  
+      <p>
+        <ngb-alert type="danger" *ngIf="serverError" (close)="serverError = false">
+          <strong>Error!</strong> Hubo un problema, favor intentar mas tarde.
+        </ngb-alert>
+      </p>
+  
+      <form [formGroup]="userNewForm" (ngSubmit)="save(userNewForm.value)">
+        <div class="form-row">
+          <div class="form-group col-md-12">
+            <label for="nombre">Nombre de usuario:</label>
+            <input [class.is-invalid] = "getNewUsername.invalid && getNewUsername.touched"
+              class="form-control" formControlName="username"/>
+              
+            <div *ngIf="(getNewUsername.invalid && getNewUsername.touched) || getNewUsername.dirty">
+              <small *ngIf="getNewUsername.errors?.required" class="text-danger">Nombre de usuario es requerido</small>
+            </div>
+          </div>
+          <div class="form-group col-md-12">
+            <label for="email">Correo:</label>
+            <input [class.is-invalid] = "getNewEmail.invalid && getNewEmail.touched"
+              class="form-control" formControlName="email"/>
+            <small>(Ejemplo: usuario@correo.com)</small>
+  
+            <div *ngIf="(getNewEmail.invalid && getNewEmail.touched) || getNewEmail.dirty">
+              <small *ngIf="getNewEmail.errors?.pattern" class="text-danger">Favor ingrese un correo valido</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-outline-primary"  [disabled]="(userNewForm.invalid)">Guardar</button>
+        </div>
+      </form>
+    </div>
+</ng-template>
+  
+<!--<ng-template #editar let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">EDITAR ALUMNO</h4>
+      <button type="button" class="close" aria-label="Close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+  
+      <p>
+        <ngb-alert type="danger" *ngIf="correoError" (close)="correoError = false">
+          <strong>Error!</strong> Correo ingresado existe y/o tiene un formato invalido, favor revisar.
+        </ngb-alert>
+      </p>
+  
+      <p>
+        <ngb-alert type="danger" *ngIf="serverError" (close)="serverError = false">
+          <strong>Error!</strong> Hubo un problema, favor intentar mas tarde.
+        </ngb-alert>
+      </p>
+  
+      <form [formGroup]="alumnoEditForm" (ngSubmit)="update(alumnoEditForm.value,alumno.id)">
+        <div class="form-row">
+          <div class="form-group col-md-12">
+            <label for="nombre">Nombre:</label>
+            <input [class.is-invalid] = "getEditNombre.invalid && getEditNombre.touched"
+              class="form-control" formControlName="nombre" [ngModel]="alumno.nombre"/>
+              
+            <div *ngIf="(getEditNombre.invalid && getEditNombre.touched) || getEditNombre.dirty">
+              <small *ngIf="getEditNombre.errors?.required" class="text-danger">Nombre es requerido</small>
+            </div>
+          </div>
+          <div class="form-group col-md-12">
+            <label for="correo">Correo:</label>
+            <input [class.is-invalid] = "getEditCorreo.invalid && getEditCorreo.touched"
+              class="form-control" formControlName="correo" [ngModel]="user.email"/>
+            <small>(Ejemplo: usuario@correo.com)</small>
+  
+            <div *ngIf="(getEditCorreo.invalid && getEditCorreo.touched) || getEditCorreo.dirty">
+              <small *ngIf="getEditCorreo.errors?.pattern" class="text-danger">Favor ingrese un correo valido</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-outline-primary"  [disabled]="(alumnoEditForm.invalid)">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </ng-template>-->
+  
+  <!--<ng-template #borrar let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">ESTAS SEGURO?</h4>
+      <button type="button" class="close" aria-label="Close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+  
+      <p>
+        <ngb-alert type="danger" *ngIf="serverError" (close)="serverError = false">
+          <strong>Error!</strong> Hubo un problema, favor intentar mas tarde.
+        </ngb-alert>
+      </p>
+  
+      <p>Esta acción no podra deshacerse.</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-primary" (click)="deleteAlumno(user.id)">Aceptar</button>
+    </div>
+</ng-template>-->

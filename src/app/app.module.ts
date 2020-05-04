@@ -1,13 +1,18 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpClientModule} from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ListUserComponent } from './views/private/users/list-user/list-user.component';
 
-import{ UsuarioService } from './providers/services/usuario/usuario.service';
+import{ UserService } from './providers/services/usuario/user.service';
 
 import { environment } from '../environments/environment';
+
 
 @NgModule({
   declarations: [
@@ -16,10 +21,15 @@ import { environment } from '../environments/environment';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    NgbModule,
+    FontAwesomeModule,
+    HttpClientModule,
+    FormsModule, 
+    ReactiveFormsModule
   ],
   providers: [
-    UsuarioService,
+    UserService,
     { provide: 'BACKEND_API_URL', useValue: environment.apiEndpoint }
   ],
   bootstrap: [AppComponent]
